@@ -6,20 +6,14 @@ class EcommerceSpider(scrapy.Spider):
     start_urls = ['https://www.scrapingcourse.com/ecommerce/']
 
     def parse(self, response):
-        # Log the current URL being processed
         self.logger.info(f"Processing URL: {response.url}")
-        
-        # Loop through each product block
         for product in response.css('a.woocommerce-LoopProduct-link'):
             item = PracticeScrapItem()
-            
-            # Extract product details
-            item['title'] = product.css('h2.product-name::text').get()
+            item['title'] = product.css('h2.woocommerce-loop-product__title::text').get()
             item['price'] = product.css('span.woocommerce-Price-amount bdi::text').get()
-            item['image_url'] = product.css('img::attr(src)').get()
+            item['image_urls'] = [product.css('img.attachment-woocommerce_thumbnail::attr(src)').get()]
             item['product_url'] = product.css('::attr(href)').get()
-
-            # Log extracted details for debugging
-            self.logger.info(f"Extracted Item: {item}")
             
+            # Log extracted item for debugging
+            self.logger.info(f"Extracted Item: {item}")
             yield item

@@ -21,11 +21,13 @@ DOWNLOAD_DELAY = 2
 FEED_EXPORT_ENCODING = 'utf-8'
 
 ITEM_PIPELINES = {
-    'scrapy.pipelines.images.ImagesPipeline': 1,
+    'practice_scrap.pipelines.CustomImagesPipeline': 1,
     'practice_scrap.pipelines.PracticeScrapPipeline': 300,
 }
 
-IMAGES_STORE = 'media/images'
+IMAGES_STORE = 'media/images'  # Folder for images
+MEDIA_ALLOW_REDIRECTS = True  # Handle redirects if necessary
+
 
 AUTOTHROTTLE_ENABLED = True
 

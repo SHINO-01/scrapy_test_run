@@ -2,6 +2,8 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
+from scrapy.pipelines.images import ImagesPipeline
+from scrapy import Request
 from itemadapter import ItemAdapter
 
 Base = declarative_base()
@@ -24,21 +26,31 @@ class PracticeScrapPipeline:
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
-        image_paths = adapter.get('images', [])
-        if image_paths:
-            adapter['image_path'] = image_paths[0]['path']
+        session = self.Session()
+
+        # Fetch the downloaded image path
+        images = adapter.get('images', [])
+        if images:
+            adapter['image_path'] = images[0]['path']
         else:
             adapter['image_path'] = None
 
-        session = self.Session()
+        # Save data into the database
         product = Product(
-            title=adapter['title'],
-            price=adapter['price'],
-            image_url=adapter['image_url'],
-            product_url=adapter['product_url'],
-            image_path=adapter['image_path']
+            title=adapter.get('title'),
+            price=adapter.get('price'),
+            image_url=adapter.get('image_urls', [None])[0],
+            product_url=adapter.get('product_url'),
+            image_path=adapter.get('image_path')
         )
         session.add(product)
         session.commit()
         session.close()
         return item
+
+class CustomImagesPipeline(ImagesPipeline):
+    def file_path(self, request, response=None, info=None, *, item=None):
+        # Return the image filename directly
+        image_guid = request.url.split('/')[-1]  # Use the original image filename
+        return f"{image_guid}"
+

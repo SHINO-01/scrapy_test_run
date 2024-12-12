@@ -3,7 +3,7 @@ import scrapy
 class PracticeScrapItem(scrapy.Item):
     title = scrapy.Field()
     price = scrapy.Field()
-    image_url = scrapy.Field()
+    image_urls = scrapy.Field()  # Required by ImagesPipeline
+    images = scrapy.Field()  # Stores download results
     product_url = scrapy.Field()
-    images = scrapy.Field()  # Added to store image download results from ImagesPipeline
-    image_path = scrapy.Field()  # To store the path of downloaded images
+    image_path = scrapy.Field()  # Populated by CustomImagesPipeline
