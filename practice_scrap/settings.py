@@ -12,7 +12,7 @@ BOT_NAME = 'practice_scrap'
 SPIDER_MODULES = ['practice_scrap.spiders']
 NEWSPIDER_MODULE = 'practice_scrap.spiders'
 
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 USER_AGENT = 'scraping_course (+https://www.scrapingcourse.com/ecommerce/)'
 
